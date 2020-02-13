@@ -1,0 +1,62 @@
+1. Enter the number of hours it took you to complete the project between
+   the <<< and >>> signs below (eg, <<<10>>>).
+
+   <<<20>>>
+   
+2. Enter the difficulty level (1: very easy; 5: very difficult) of the project
+   between the <<< and >>> signs below (eg, <<<3>>>).
+
+   <<<3>>>
+
+3. Provide a short description of how you approached each problem, issues you 
+   encountered, and how you resolved those issues.
+
+   Problem 1 (Long and Double Basic Types): 
+   make two new class file literalong.java and literalDouble.java
+   add new "else if" in the last literal() method.
+   then, modify seeBasicType(), BasicType() and Type.java let then able to
+   recognize this two new type.
+
+   Problem 2 (Operators): 
+   Add those class of opreators in assignment.java, BinaryExpression.java and so
+   on... 
+   Then, add new "else if" in assignmentExpression() to return those new classes.
+   
+   Problem 3 (Conditional Expression): 
+   added some new method like condtionalExpression()... in parser.java and make 
+   a new AST node JConditionalExpression to support this new function.
+
+   Problem 4 (Switch Statement):
+   Make a new AST node called JSwitchStatement.
+   Use hashtable two save the case and block.
+   Modify the statement() method.
+
+   Problem 5 (Do-While Statement): ...
+    Make a new AST node called JDoWhileStatement.
+    Modify the statement() method.
+    Which is much like the while statement.
+   Problem 6 (For Statement):
+    In JForStatment, use JStatement, JExpression and JStatement to represnt the
+    init value, condition and updates. And use a JStatement for the body.
+    Them added tons of code in statement().
+    
+   Problem 7 (Exception Handlers): 
+   Make a new AST node called JTryCatchFinallyStatement.
+   I use an ArrayList<JStatement> to save the cases.
+
+   Problem 8 (Interface Type Declaration): 
+   Imitate the classDeclaration, 80% of those code are same.
+
+4. Did you receive help from anyone? List their names, status (classmate, 
+   CS451/651 grad, TA, other), and the nature of help received.
+
+   Name               Status       Help Received
+   ----               ------       -------------
+   No
+   ...                ...          ...
+
+5. List any other comments here. Feel free to provide any feedback on how
+   much you learned from doing the assignment, and whether you enjoyed
+   doing it.
+
+   Not difficult, but a lot of trivial works.
