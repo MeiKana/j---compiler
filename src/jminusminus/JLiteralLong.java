@@ -12,7 +12,7 @@ class JLiteralLong extends JExpression {
     private String text;
 
     /**
-     * Constructs an AST node for an {@code int} literal given its line number 
+     * Constructs an AST node for an {@code long} literal given its line number 
      * and string representation.
      * 
      * @param line
@@ -27,7 +27,7 @@ class JLiteralLong extends JExpression {
     }
 
     /**
-     * Analyzing an int literal is trivial.
+     * Analyzing an long literal is trivial.
      * 
      * @param context
      *            context in which names are resolved (ignored here).
@@ -38,9 +38,13 @@ class JLiteralLong extends JExpression {
         type = Type.LONG;
         return this;
     }
+    
+    public long toNum(){
+    	return Long.parseLong(text);
+    }
 
     /**
-     * Generating code for an int literal means generating code to push it onto
+     * Generating code for an long literal means generating code to push it onto
      * the stack.
      * 
      * @param output
@@ -49,7 +53,14 @@ class JLiteralLong extends JExpression {
      */
 
     public void codegen(CLEmitter output) {
-
+    	if(text.contains("L") || text.contains("l")){
+    		text = text.substring(0, text.length() - 1);
+    	}
+    	long i = Long.parseLong(text);
+    	if(i == 0 ) output.addNoArgInstruction(LCONST_0);
+    	else if (i == 1) output.addNoArgInstruction(LCONST_1);
+    	else
+    		output.addLDCInstruction(i);
     }
 
     /**

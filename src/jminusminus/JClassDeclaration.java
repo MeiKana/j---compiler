@@ -140,9 +140,10 @@ class JClassDeclaration extends JAST implements JTypeDecl {
      * @param context
      *            the parent (compilation unit) context.
      */
-
+    
+    @Override
     public void preAnalyze(Context context) {
- /*       // Construct a class context
+        // Construct a class context
         this.context = new ClassContext(this, context);
 
         // Resolve superclass
@@ -156,6 +157,13 @@ class JClassDeclaration extends JAST implements JTypeDecl {
             JAST.compilationUnit.reportSemanticError(line,
                     "Cannot extend a final type: %s", superType.toString());
         }
+        
+      // Resolve all implemented interfaces.
+        
+ /*       for(Type interFace: implementsList){
+        	interFace = interFace.resolve(this.context);
+        	thisType.checkAccess(line, interFace);
+        } */
 
         // Create the (partial) class
         CLEmitter partial = new CLEmitter(false);
@@ -186,7 +194,7 @@ class JClassDeclaration extends JAST implements JTypeDecl {
         Type id = this.context.lookupType(name);
         if (id != null && !JAST.compilationUnit.errorHasOccurred()) {
             id.setClassRep(partial.toClass());
-        } */
+        }
     }
 
     /**
@@ -242,7 +250,7 @@ class JClassDeclaration extends JAST implements JTypeDecl {
 
     public void codegen(CLEmitter output) {
         // The class header
- /*       String qualifiedName = JAST.compilationUnit.packageName() == "" ? name
+        String qualifiedName = JAST.compilationUnit.packageName() == "" ? name
                 : JAST.compilationUnit.packageName() + "/" + name;
         output.addClass(mods, qualifiedName, superType.jvmName(), null, false);
 
@@ -259,7 +267,7 @@ class JClassDeclaration extends JAST implements JTypeDecl {
         // Generate a class initialization method?
         if (staticFieldInitializations.size() > 0) {
             codegenClassInit(output);
-        } */
+        } 
     }
 
     /**
@@ -289,7 +297,7 @@ class JClassDeclaration extends JAST implements JTypeDecl {
                 p.println("<IMPLEMENT name=\" "+ interfaces.toString() + "\" />");
             }
             p.indentLeft();
-            p.println("</IMPLEMENT>");            
+            p.println("</IMPLEMENT>");             
         }
         if (classBlock != null) {
             p.println("<ClassBlock>");

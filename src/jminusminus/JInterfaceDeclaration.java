@@ -5,6 +5,7 @@ import static jminusminus.CLConstants.*;
 
 public class JInterfaceDeclaration extends JAST implements JTypeDecl {
     String name;
+    Context context;
     public Type superType;
     public Type thisType;
     private ArrayList<JMember> classBlock;
@@ -30,11 +31,17 @@ public class JInterfaceDeclaration extends JAST implements JTypeDecl {
     public Type thisType(){
         return thisType;
     }
-    public void declareThisType(Context context){}
+    public void declareThisType(Context context){
+    	
+    }
     
-    public void preAnalyze(Context context){}
+    public void preAnalyze(Context context){
+
+    }
     
-    public void codegen(CLEmitter outpout){}
+    public void codegen(CLEmitter outpout){
+    	
+    }
     
     public void writeToStdOut(PrettyPrinter p){
         p.printf("<JInterfaceDeclaration line=\"%d\" name=\"%s\""

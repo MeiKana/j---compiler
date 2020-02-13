@@ -169,10 +169,47 @@ class JVariable extends JExpression implements JLhs {
                         break;
                     }
                 }
+                else if (type == Type.LONG){
+                    switch (offset) {
+                    case 0:
+                        output.addNoArgInstruction(LLOAD_0);
+                        break;
+                    case 1:
+                        output.addNoArgInstruction(LLOAD_1);
+                        break;
+                    case 2:
+                        output.addNoArgInstruction(LLOAD_2);
+                        break;
+                    case 3:
+                        output.addNoArgInstruction(LLOAD_3);
+                        break;
+                    default:
+                        output.addOneArgInstruction(LLOAD, offset);
+                        break;
+                    }
+                }
+                else if (type == Type.DOUBLE){
+                    switch (offset) {
+                    case 0:
+                        output.addNoArgInstruction(DLOAD_0);
+                        break;
+                    case 1:
+                        output.addNoArgInstruction(DLOAD_1);
+                        break;
+                    case 2:
+                        output.addNoArgInstruction(DLOAD_2);
+                        break;
+                    case 3:
+                        output.addNoArgInstruction(DLOAD_3);
+                        break;
+                    default:
+                        output.addOneArgInstruction(DLOAD, offset);
+                        break;
+                    }               	
+                }
             }
         }
     }
-
     /**
      * The semantics of j-- requires that we implement short-circuit branching
      * in implementing the identifier expression.
@@ -294,6 +331,44 @@ class JVariable extends JExpression implements JLhs {
                         break;
                     default:
                         output.addOneArgInstruction(ISTORE, offset);
+                        break;
+                    }
+                }
+                else if (type == Type.LONG){
+                    switch (offset) {
+                    case 0:
+                        output.addNoArgInstruction(LSTORE_0);
+                        break;
+                    case 1:
+                        output.addNoArgInstruction(LSTORE_1);
+                        break;
+                    case 2:
+                        output.addNoArgInstruction(LSTORE_2);
+                        break;
+                    case 3:
+                        output.addNoArgInstruction(LSTORE_3);
+                        break;
+                    default:
+                        output.addOneArgInstruction(LSTORE, offset);
+                        break;
+                    }
+                }
+                else if(type == type.DOUBLE){
+                    switch (offset) {
+                    case 0:
+                        output.addNoArgInstruction(DSTORE_0);
+                        break;
+                    case 1:
+                        output.addNoArgInstruction(DSTORE_1);
+                        break;
+                    case 2:
+                        output.addNoArgInstruction(DSTORE_2);
+                        break;
+                    case 3:
+                        output.addNoArgInstruction(DSTORE_3);
+                        break;
+                    default:
+                        output.addOneArgInstruction(DSTORE, offset);
                         break;
                     }
                 }

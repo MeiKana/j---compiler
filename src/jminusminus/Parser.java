@@ -754,7 +754,7 @@ public class Parser {
             mustBe(SEMI);
             return new JDoWhileStatement(line, doBody, condition);
         } else if (have(THROW)){
-            return expression();
+            return new JThrowStatement(line, expression());
         } else if (have(TRY)){
             JBlock tryBlock = block();
             ArrayList<JBlock> catchBlocks= new ArrayList<JBlock>();

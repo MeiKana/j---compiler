@@ -9,8 +9,8 @@ package jminusminus;
 interface JTypeDecl {
 
     /**
-     * Even before {@code preAnalyze}, declare this type in the parent context 
-     * so that it is available in the {@code preAnalyze} method of other types.
+     * Even before preAnalyze(), declare this type in the parent context so that
+     * it is available in the preAnalyze() of other types.
      * 
      * @param context
      *            the compilation unit context in which we're declaring types.
@@ -19,7 +19,7 @@ interface JTypeDecl {
     public void declareThisType(Context context);
 
     /**
-     * Pre-analyzes the members of this declaration in the parent context.
+     * Pre-analyze the members of this declaration in the parent context.
      * Pre-analysis extends to the member headers (including method headers) but
      * not into the bodies (if any).
      * 
@@ -30,7 +30,7 @@ interface JTypeDecl {
     public void preAnalyze(Context context);
 
     /**
-     * Returns the name of this type declaration.
+     * Return the name of this type declaration.
      * 
      * @return the name of this type declaration.
      */
@@ -38,7 +38,7 @@ interface JTypeDecl {
     public String name();
 
     /**
-     * Returns the super class' type.
+     * Return the super class' type.
      * 
      * @return the super class' type.
      */
@@ -46,7 +46,7 @@ interface JTypeDecl {
     public Type superType();
 
     /**
-     * Returns the type that this type declaration defines.
+     * Return the type that this type declaration defines.
      * 
      * @return the type defined by this type declaration.
      */

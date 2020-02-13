@@ -177,6 +177,13 @@ class JMethodDeclaration extends JAST implements JMember {
             defn.initialize();
             this.context.addEntry(param.line(), param.name(), defn);
         }
+        if(hasExceptions)
+	        for(TypeName ex: exceptions){
+	            LocalVariableDefn defn = new LocalVariableDefn(ex, 
+	                    this.context.nextOffset());
+	            defn.initialize();
+	            this.context.addEntry(ex.line(), "e", defn);
+	        }
         if (body != null) {
             body = body.analyze(this.context);
             if (returnType!=Type.VOID && ! methodContext.methodHasReturn()){

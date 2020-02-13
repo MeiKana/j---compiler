@@ -183,7 +183,7 @@ class JMessageExpression extends JExpression {
             argument.codegen(output);
         }
         int mnemonic = method.isStatic() ? INVOKESTATIC : target.type()
-                .isInterface() ? INVOKEINTERFACE : INVOKEVIRTUAL;
+        		.isInterface() ? INVOKEINTERFACE : INVOKEVIRTUAL;
         output.addMemberAccessInstruction(mnemonic, target.type().jvmName(),
                 messageName, method.toDescriptor());
         if (isStatementExpression && type != Type.VOID) {

@@ -40,8 +40,18 @@ abstract class JComparison extends JBooleanBinaryExpression {
     public JExpression analyze(Context context) {
         lhs = (JExpression) lhs.analyze(context);
         rhs = (JExpression) rhs.analyze(context);
-        lhs.type().mustMatchExpected(line(), Type.INT);
-        rhs.type().mustMatchExpected(line(), lhs.type());
+        if(lhs.type() == Type.INT){
+	        lhs.type().mustMatchExpected(line(), Type.INT);
+	        rhs.type().mustMatchExpected(line(), lhs.type());
+        }
+        else if (lhs.type() == Type.DOUBLE){
+        	lhs.type().mustMatchExpected(line(), Type.DOUBLE);
+        	rhs.type().mustMatchExpected(line(),  lhs.type());
+        }
+        else if(lhs.type() == type.LONG){
+        	lhs.type().mustMatchExpected(line(), Type.LONG);
+        	rhs.type().mustMatchExpected(line(),  lhs.type());
+        }
         type = Type.BOOLEAN;
         return this;
     }
@@ -49,20 +59,83 @@ abstract class JComparison extends JBooleanBinaryExpression {
 }
 
 class JGreaterEqualOp extends JComparison{
+    /**
+     * Constructs an AST node for a Greater and Equal expression given its line
+     * number, and the lhs and rhs operands.
+     * 
+     * @param line
+     *            line in which the greater-than expression occurs in the source
+     *            file.
+     * @param lhs
+     *            lhs operand.
+     * @param rhs
+     *            rhs operand.
+     */
+
     public JGreaterEqualOp(int line, JExpression lhs, JExpression rhs){
         super(line, ">=", lhs, rhs);
     }
-    public void codegen(CLEmitter output, String targetLabel, boolean onTrue) {}
-    public JExpression analyze(Context context) {return this;}
+    /**
+     * Branching code generation for >=; operation.
+     * 
+     * @param output
+     *            the code emitter (basically an abstraction for producing the
+     *            .class file).
+     * @param targetLabel
+     *            target for generated branch instruction.
+     * @param onTrue
+     *            should we branch on true?
+     */
+    public void codegen(CLEmitter output, String targetLabel, boolean onTrue) {
+        lhs.codegen(output);
+        rhs.codegen(output);
+        
+        output.addBranchInstruction(onTrue ? IF_ICMPGE : IF_ICMPLE,
+                        targetLabel);
+    }
+    
     
 }
 
 class JLesserOp extends JComparison{
+    /**
+     * Constructs an AST node for a lesser-than expression given its line
+     * number, and the lhs and rhs operands.
+     * 
+     * @param line
+     *            line in which the greater-than expression occurs in the source
+     *            file.
+     * @param lhs
+     *            lhs operand.
+     * @param rhs
+     *            rhs operand.
+     */
+
+
+
     public JLesserOp(int line, JExpression lhs, JExpression rhs){
         super(line, "<", lhs, rhs);
     }
-    public void codegen(CLEmitter output, String targetLabel, boolean onTrue) {}
-    public JExpression analyze(Context context) {return this;}
+
+    /**
+     * Branching code generation for <; operation.
+     * 
+     * @param output
+     *            the code emitter (basically an abstraction for producing the
+     *            .class file).
+     * @param targetLabel
+     *            target for generated branch instruction.
+     * @param onTrue
+     *            should we branch on true?
+     */
+    public void codegen(CLEmitter output, String targetLabel, boolean onTrue) {
+        lhs.codegen(output);
+        rhs.codegen(output);
+        
+        output.addBranchInstruction(onTrue ? IF_ICMPLE : IF_ICMPGT,
+                        targetLabel);
+    }
+    
     
 }
 

@@ -345,6 +345,16 @@ class LocalContext extends Context {
     public int nextOffset() {
         return offset++;
     }
+    
+    public int nextOffset(Type type) {
+        if (type ==Type.DOUBLE || type == Type.LONG){
+            int oldValue = offset;
+            offset +=2;
+            return oldValue;
+        }
+        else return offset++;
+    }
+
 
     /**
      * {@inheritDoc}

@@ -1,5 +1,5 @@
 package jminusminus;
-
+import static jminusminus.CLConstants.GOTO;
 
 class JConditionalExpression extends JExpression{
     JExpression test;
@@ -11,13 +11,50 @@ class JConditionalExpression extends JExpression{
         super(line);
         test = exp;
         this.trueExp = trueExp;
-        this.falseExp = falseExp;
+        this.falseExp = falseExp;        
     }
-    public JExpression analyze(Context context)
-        {return this;
+    
+    /**
+     * Analyzing the condition-expression means analyzing its components and checking
+     * that the test is a boolean. Also set the type() to boolean.
+     * 
+     * @param context
+     *            context in which names are resolved.
+     * @return the analyzed (and possibly rewritten) AST subtree.
+     */
+    public JExpression analyze(Context context){
+    		
+    		test = (JExpression) test.analyze(context);
+    		test.type().mustMatchExpected(line, Type.BOOLEAN);
+    		trueExp = (JExpression) trueExp.analyze(context);
+    		falseExp = (JExpression) falseExp.analyze(context);
+    		this.type = trueExp.type();
+    		return this;
         }
+    
+    public Type type(){
+    	return type;
+    }
+    /**
+     * Code generation for an condition-expression. We generate code to branch over the
+     * consequent if !test; the consequent is followed by an unconditonal branch
+     * over (any) alternate.
+     * 
+     * @param output
+     *            the code emitter (basically an abstraction for producing the
+     *            .class file).
+     */
+
         
-    public void codegen(CLEmitter c){
+    public void codegen(CLEmitter output){
+        String falseLabel = output.createLabel();
+        String endLabel = output.createLabel();
+        test.codegen(output, falseLabel, false);
+        trueExp.codegen(output);
+        output.addBranchInstruction(GOTO, endLabel);
+        output.addLabel(falseLabel);
+        falseExp.codegen(output);
+        output.addLabel(endLabel);
     }
     
     public void writeToStdOut(PrettyPrinter p){

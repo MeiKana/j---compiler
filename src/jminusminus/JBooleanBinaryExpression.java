@@ -121,52 +121,235 @@ class JEqualOp extends JBooleanBinaryExpression {
                     targetLabel);
         }
     }
+    /**
+     * The AST node for a OR | expression. Implements 
+     * short-circuiting branching.
+     */
 
 }
 class JBitOrOp extends JBooleanBinaryExpression {
     public JBitOrOp(int line, JExpression lhs, JExpression rhs) {
         super(line, "|", lhs, rhs);
     }
-    public JExpression analyze(Context context) {return this;}
-    public void codegen(CLEmitter output, String targetLabel, boolean onTrue) {}
+    
+    /**
+     * Analyzing an or means analyzing its operands and
+     * checking that the types match.
+     * 
+     * @param context
+     *            context in which names are resolved.
+     * @return the analyzed (and possibly rewritten) AST subtree.
+     */
+
+    public JExpression analyze(Context context) {
+        lhs = (JExpression) lhs.analyze(context);
+        rhs = (JExpression) rhs.analyze(context);
+        if(lhs.type == Type.LONG){
+            lhs.type().mustMatchExpected(line(), Type.LONG);
+            rhs.type().mustMatchExpected(line(), Type.LONG);
+            type = Type.LONG;
+        }
+        else{
+	        lhs.type().mustMatchExpected(line(), Type.INT);
+	        rhs.type().mustMatchExpected(line(), Type.INT);
+	        type = Type.INT;
+        }
+        return this;
+    }
+    public void codegen(CLEmitter output, String targetLabel, boolean onTrue) {
+    	if(lhs.type().equals(Type.INT)){
+    		lhs.codegen(output);
+    		rhs.codegen(output);
+    		output.addNoArgInstruction(IOR);
+    	}
+    	else if(lhs.type().equals(Type.LONG)){
+    		lhs.codegen(output);
+    		rhs.codegen(output);
+    		output.addNoArgInstruction(LOR);
+    	}
+    }
 
 }
+/**
+ * The AST node for a  AND & expression. Implements 
+ * short-circuiting branching.
+ */
+
 
 class JBitAndOp extends JBooleanBinaryExpression {
     public JBitAndOp(int line, JExpression lhs, JExpression rhs) {
         super(line, "&", lhs, rhs);
     }
-    public JExpression analyze(Context context) {return this;}
-    public void codegen(CLEmitter output, String targetLabel, boolean onTrue) {}
+    /**
+     * Analyzing an AND means analyzing its operands and
+     * checking that the types match.
+     * 
+     * @param context
+     *            context in which names are resolved.
+     * @return the analyzed (and possibly rewritten) AST subtree.
+     */
+
+    public JExpression analyze(Context context) {
+        lhs = (JExpression) lhs.analyze(context);
+        rhs = (JExpression) rhs.analyze(context);
+        if(lhs.type == Type.LONG){
+            lhs.type().mustMatchExpected(line(), Type.LONG);
+            rhs.type().mustMatchExpected(line(), Type.LONG);
+            type = Type.LONG;
+        }
+        else{
+	        lhs.type().mustMatchExpected(line(), Type.INT);
+	        rhs.type().mustMatchExpected(line(), Type.INT);
+	        type = Type.INT;
+        }
+        return this;
+    }
+    public void codegen(CLEmitter output, String targetLabel, boolean onTrue) {
+    	if(lhs.type().equals(Type.INT)){
+    		lhs.codegen(output);
+    		rhs.codegen(output);
+    		output.addNoArgInstruction(IAND);
+    	}
+    	else if(lhs.type().equals(Type.LONG)){
+    		lhs.codegen(output);
+    		rhs.codegen(output);
+    		output.addNoArgInstruction(LAND);
+    	}
+    }
 
 }
+/**
+ * The AST node for a XOR ^ expression. Implements 
+ * short-circuiting branching.
+ */
+
+
 class JXorOp extends JBooleanBinaryExpression {
     public JXorOp(int line, JExpression lhs, JExpression rhs) {
         super(line, "^", lhs, rhs);
     }
-    public JExpression analyze(Context context) {return this;}
-    public void codegen(CLEmitter output, String targetLabel, boolean onTrue) {}
+    public JExpression analyze(Context context) {
+        lhs = (JExpression) lhs.analyze(context);
+        rhs = (JExpression) rhs.analyze(context);
+        if(lhs.type == Type.LONG){
+            lhs.type().mustMatchExpected(line(), Type.LONG);
+            rhs.type().mustMatchExpected(line(), Type.LONG);
+            type = Type.LONG;
+        }
+        else{
+	        lhs.type().mustMatchExpected(line(), Type.INT);
+	        rhs.type().mustMatchExpected(line(), Type.INT);
+	        type = Type.INT;
+        }
+        return this;
+    }
+    public void codegen(CLEmitter output, String targetLabel, boolean onTrue) {
+    	if(lhs.type().equals(Type.INT)){
+    		lhs.codegen(output);
+    		rhs.codegen(output);
+    		output.addNoArgInstruction(IXOR);
+    	}
+    	else if(lhs.type().equals(Type.LONG)){
+    		lhs.codegen(output);
+    		rhs.codegen(output);
+    		output.addNoArgInstruction(LXOR);
+    	}
+    }
 
 }
+/**
+ * The AST node for a Not equal != expression. Implements 
+ * short-circuiting branching.
+ */
 
 
 class JNotEqualOp extends JBooleanBinaryExpression {
     public JNotEqualOp(int line, JExpression lhs, JExpression rhs) {
         super(line, "!=", lhs, rhs);
     }
-    public JExpression analyze(Context context) {return this;}
-    public void codegen(CLEmitter output, String targetLabel, boolean onTrue) {}
+    
+    /**
+     * Analyzing an not equality  means analyzing its operands and
+     * checking that the types match.
+     * 
+     * @param context
+     *            context in which names are resolved.
+     * @return the analyzed (and possibly rewritten) AST subtree.
+     */
+
+    public JExpression analyze(Context context) {
+        lhs = (JExpression) lhs.analyze(context);
+        rhs = (JExpression) rhs.analyze(context);
+        lhs.type().mustMatchExpected(line(), rhs.type());
+        type = Type.BOOLEAN;
+        return this;
+    }
+    public void codegen(CLEmitter output, String targetLabel, boolean onTrue) {
+        lhs.codegen(output);
+        rhs.codegen(output);
+        if (lhs.type().isReference()) {
+            output.addBranchInstruction(onTrue ? IF_ACMPNE : IF_ACMPEQ,
+                    targetLabel);
+        } else {
+            output.addBranchInstruction(onTrue ? IF_ICMPNE : IF_ICMPEQ,
+                    targetLabel);
+        }
+    }
 
 }
+/**
+ * The AST node for a logical OR || expression. Implements 
+ * short-circuiting branching.
+ */
 
 
 class JLogicalOrOp extends JBooleanBinaryExpression {
     public JLogicalOrOp(int line, JExpression lhs, JExpression rhs) {
-        super(line, "&&", lhs, rhs);
+        super(line, "||", lhs, rhs);
     }
-    public JExpression analyze(Context context) {return this;}
-    public void codegen(CLEmitter output, String targetLabel, boolean onTrue) {}
+    
+    /**
+     * Analyzing an logical OR means analyzing its operands and
+     * checking that the types match.
+     * 
+     * @param context
+     *            context in which names are resolved.
+     * @return the analyzed (and possibly rewritten) AST subtree.
+     */
 
+    public JExpression analyze(Context context) {
+        lhs = (JExpression) lhs.analyze(context);
+        rhs = (JExpression) rhs.analyze(context);
+        lhs.type().mustMatchExpected(line(), Type.BOOLEAN);
+        rhs.type().mustMatchExpected(line(), Type.BOOLEAN);
+        type = Type.BOOLEAN;
+        return this;
+    }
+    
+    /**
+     * The semantics of j-- require that we implement short-circuiting branching
+     * in implementing the logical OR.
+     * 
+     * @param output
+     *            the code emitter (basically an abstraction for producing the
+     *            .class file).
+     * @param targetLabel
+     *            target for generated branch instruction.
+     * @param onTrue
+     *            should we branch on true?
+     */
+    public void codegen(CLEmitter output, String targetLabel, boolean onTrue) {
+    	if(onTrue){
+    		lhs.codegen(output, targetLabel, true);
+    		rhs.codegen(output, targetLabel, true);
+    	}
+    	else {
+    		String falseLabel = output.createLabel();
+    		lhs.codegen(output, falseLabel, true);
+    		rhs.codegen(output, targetLabel, false);
+    		output.addLabel(falseLabel);
+    	}
+    }
 }
 
 /**

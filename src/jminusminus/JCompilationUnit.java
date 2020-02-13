@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * indicating if a semantic error has been detected in analysis or code 
  * generation. It also maintains a {@link CompilationUnitContext} 
  * (built in pre-analysis) for declaring both imported and declared types.
- * <p>
+ * </p>
  * The AST is produced by the {@link Parser}. Once the AST has been built, three
  * successive methods are invoked:
  * <ol>

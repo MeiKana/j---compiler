@@ -70,47 +70,235 @@ class JUnsignedLeftShiftOp extends JBinaryExpression{
     public JUnsignedLeftShiftOp(int line, JExpression lhs, JExpression rhs) {
         super(line, "<<<", lhs, rhs);
     }
-    public JExpression analyze(Context context) {return this;}
-    public void codegen(CLEmitter output) {}
+    public JExpression analyze(Context context) {
+        lhs = (JExpression) lhs.analyze(context);
+        rhs = (JExpression) rhs.analyze(context);
+        if(lhs.type == Type.LONG){
+            lhs.type().mustMatchExpected(line(), Type.LONG);
+            rhs.type().mustMatchExpected(line(), Type.LONG);
+            type = Type.LONG;
+        }
+        else if(lhs.type == Type.DOUBLE){
+            lhs.type().mustMatchExpected(line(), Type.DOUBLE);
+            rhs.type().mustMatchExpected(line(), Type.DOUBLE);
+            type = Type.DOUBLE;
+        }else{
+	        lhs.type().mustMatchExpected(line(), Type.INT);
+	        rhs.type().mustMatchExpected(line(), Type.INT);
+	        type = Type.INT;
+        }
+        return this;
+    }
+    public void codegen(CLEmitter output) {
+
+    }
 }
 
+/**
+ * The AST node for a unsigned right shift (>>>) expression.
+ */
 class JUnsignedRightShiftOp extends JBinaryExpression{
     public JUnsignedRightShiftOp(int line, JExpression lhs, JExpression rhs) {
         super(line, ">>>", lhs, rhs);
     }
-    public JExpression analyze(Context context) {return this;}
-    public void codegen(CLEmitter output) {}
+    /**
+     * Analyzing the >>> operation involves analyzing its operands, checking
+     * types, and determining the result type.
+     * 
+     * @param context
+     *            context in which names are resolved.
+     * @return the analyzed (and possibly rewritten) AST subtree.
+     */
+    public JExpression analyze(Context context) {
+        lhs = (JExpression) lhs.analyze(context);
+        rhs = (JExpression) rhs.analyze(context);
+        if(lhs.type == Type.LONG){
+            lhs.type().mustMatchExpected(line(), Type.LONG);
+            rhs.type().mustMatchExpected(line(), Type.LONG);
+            type = Type.LONG;
+        }
+        else{
+	        lhs.type().mustMatchExpected(line(), Type.INT);
+	        rhs.type().mustMatchExpected(line(), Type.INT);
+	        type = Type.INT;
+        }
+        return this;
+    }
+    public void codegen(CLEmitter output) {
+    	if(lhs.type == Type.INT){
+	        lhs.codegen(output);
+	        rhs.codegen(output);
+	        output.addNoArgInstruction(IUSHR);
+    	}else if(lhs.type == Type.LONG){
+	        lhs.codegen(output);
+	        rhs.codegen(output);
+	        output.addNoArgInstruction(LUSHR);
+    	}
+    }
 }
-
+/**
+ * The AST node for a left shift (<<) expression.
+ */
 class JLeftShiftOp extends JBinaryExpression{
     public JLeftShiftOp(int line, JExpression lhs, JExpression rhs) {
         super(line, "<<", lhs, rhs);
     }
-    public JExpression analyze(Context context) {return this;}
-    public void codegen(CLEmitter output) {}
+    /**
+     * Analyzing the << operation involves analyzing its operands, checking
+     * types, and determining the result type.
+     * 
+     * @param context
+     *            context in which names are resolved.
+     * @return the analyzed (and possibly rewritten) AST subtree.
+     */
+    //Only long and int
+    
+    public JExpression analyze(Context context) {       
+	    lhs = (JExpression) lhs.analyze(context);
+	    rhs = (JExpression) rhs.analyze(context);
+	    if(lhs.type == Type.LONG){
+	        lhs.type().mustMatchExpected(line(), Type.LONG);
+	        rhs.type().mustMatchExpected(line(), Type.LONG);
+	        type = Type.LONG;
+	    }
+	    else{
+	        lhs.type().mustMatchExpected(line(), Type.INT);
+	        rhs.type().mustMatchExpected(line(), Type.INT);
+	        type = Type.INT;
+	    	}
+	    return this;
+	    }
+    public void codegen(CLEmitter output) {
+    	if(lhs.type == Type.INT){
+	        lhs.codegen(output);
+	        rhs.codegen(output);
+	        output.addNoArgInstruction(ISHL);
+    	}else if(lhs.type == Type.LONG){
+	        lhs.codegen(output);
+	        rhs.codegen(output);
+	        output.addNoArgInstruction(LSHL);
+    	}
+    }
 }
+/**
+ * The AST node for a right shift (>>) expression.
+ */
 
 class JRightShiftOp extends JBinaryExpression{
     public JRightShiftOp(int line, JExpression lhs, JExpression rhs) {
         super(line, ">>", lhs, rhs);
     }
-    public JExpression analyze(Context context) {return this;}
-    public void codegen(CLEmitter output) {}
+    /**
+     * Analyzing the >> operation involves analyzing its operands, checking
+     * types, and determining the result type.
+     * 
+     * @param context
+     *            context in which names are resolved.
+     * @return the analyzed (and possibly rewritten) AST subtree.
+     */
+    //only long and int
+    public JExpression analyze(Context context) { 
+        lhs = (JExpression) lhs.analyze(context);
+        rhs = (JExpression) rhs.analyze(context);
+        if(lhs.type == Type.LONG){
+            lhs.type().mustMatchExpected(line(), Type.LONG);
+            rhs.type().mustMatchExpected(line(), Type.LONG);
+            type = Type.LONG;
+        }else{
+	        lhs.type().mustMatchExpected(line(), Type.INT);
+	        rhs.type().mustMatchExpected(line(), Type.INT);
+	        type = Type.INT;
+        	}
+        return this;
+        }
+    public void codegen(CLEmitter output) {
+    	if(lhs.type == Type.INT){
+	        lhs.codegen(output);
+	        rhs.codegen(output);
+	        output.addNoArgInstruction(ISHR);
+    	}else if(lhs.type == Type.LONG){
+	        lhs.codegen(output);
+	        rhs.codegen(output);
+	        output.addNoArgInstruction(LSHR);
+    	}    	
+    }
 }
-
+/**
+ * The AST node for a reminder (%) expression.
+ */
 class JRemOp extends JBinaryExpression{
     public JRemOp(int line, JExpression lhs, JExpression rhs) {
         super(line, "%", lhs, rhs);
     }
-    public JExpression analyze(Context context) {return this;}
-    public void codegen(CLEmitter output) {}
+    
+    /**
+     * Analyzing the % operation involves analyzing its operands, checking
+     * types, and determining the result type.
+     * 
+     * @param context
+     *            context in which names are resolved.
+     * @return the analyzed (and possibly rewritten) AST subtree.
+     */
+    public JExpression analyze(Context context) {
+        lhs = (JExpression) lhs.analyze(context);
+        rhs = (JExpression) rhs.analyze(context);
+        if(lhs.type == Type.LONG){
+            lhs.type().mustMatchExpected(line(), Type.LONG);
+            rhs.type().mustMatchExpected(line(), Type.LONG);
+            type = Type.LONG;
+        }
+        else if(lhs.type == Type.DOUBLE){
+            lhs.type().mustMatchExpected(line(), Type.DOUBLE);
+            rhs.type().mustMatchExpected(line(), Type.DOUBLE);
+            type = Type.DOUBLE;
+        }else{
+	        lhs.type().mustMatchExpected(line(), Type.INT);
+	        rhs.type().mustMatchExpected(line(), Type.INT);
+	        type = Type.INT;
+        }
+        return this;}
+    public void codegen(CLEmitter output) {
+    	if(lhs.type == Type.INT){
+	        lhs.codegen(output);
+	        rhs.codegen(output);
+	        output.addNoArgInstruction(IREM);
+    	}else if(lhs.type == Type.LONG){
+	        lhs.codegen(output);
+	        rhs.codegen(output);
+	        output.addNoArgInstruction(LREM);
+    	}
+    	else if (lhs.type == Type.DOUBLE){
+	        lhs.codegen(output);
+	        rhs.codegen(output);
+	        output.addNoArgInstruction(DREM);
+    	}
+    }
 }
+/**
+ * The AST node for a division (/) expression.
+ */
+
 class JDivOp extends JBinaryExpression{
     public JDivOp(int line, JExpression lhs, JExpression rhs) {
         super(line, "/", lhs, rhs);
     }
     public JExpression analyze(Context context) {return this;}
-    public void codegen(CLEmitter output) {}
+    public void codegen(CLEmitter output) {
+    	if(lhs.type == Type.INT){
+	        lhs.codegen(output);
+	        rhs.codegen(output);
+	        output.addNoArgInstruction(IDIV);
+    	}else if(lhs.type == Type.LONG){
+	        lhs.codegen(output);
+	        rhs.codegen(output);
+	        output.addNoArgInstruction(LDIV);
+    	}
+    	else if (lhs.type == Type.DOUBLE){
+	        lhs.codegen(output);
+	        rhs.codegen(output);
+	        output.addNoArgInstruction(DDIV);
+    	}
+    }
 }
 
 
@@ -152,15 +340,23 @@ class JPlusOp extends JBinaryExpression {
     public JExpression analyze(Context context) {
         lhs = (JExpression) lhs.analyze(context);
         rhs = (JExpression) rhs.analyze(context);
-        if (lhs.type() == Type.STRING || rhs.type() == Type.STRING) {
-            return (new JStringConcatenationOp(line, lhs, rhs))
-                    .analyze(context);
-        } else if (lhs.type() == Type.INT && rhs.type() == Type.INT) {
-            type = Type.INT;
-        } else {
-            type = Type.ANY;
-            JAST.compilationUnit.reportSemanticError(line(),
-                    "Invalid operand types for +");
+        if(lhs.type == Type.LONG){
+            lhs.type().mustMatchExpected(line(), Type.LONG);
+            rhs.type().mustMatchExpected(line(), Type.LONG);
+            type = Type.LONG;
+        }
+        else if(lhs.type == Type.DOUBLE){
+            lhs.type().mustMatchExpected(line(), Type.DOUBLE);
+            rhs.type().mustMatchExpected(line(), Type.DOUBLE);
+            type = Type.DOUBLE;
+        }
+        else if(lhs.type == Type.STRING || rhs.type == Type.STRING){
+        	type = type.STRING;
+        }
+        else{
+	        lhs.type().mustMatchExpected(line(), Type.INT);
+	        rhs.type().mustMatchExpected(line(), Type.INT);
+	        type = Type.INT;
         }
         return this;
     }
@@ -177,11 +373,36 @@ class JPlusOp extends JBinaryExpression {
      */
 
     public void codegen(CLEmitter output) {
-        if (type == Type.INT) {
-            lhs.codegen(output);
-            rhs.codegen(output);
-            output.addNoArgInstruction(IADD);
-        }
+    	if(lhs.type == Type.INT){
+    		if(rhs.type == Type.STRING){
+    			output.addReferenceInstruction(NEW, "java/lang/StringBuilder");
+    			output.addNoArgInstruction(DUP);
+    			output.addMemberAccessInstruction(INVOKESPECIAL, 
+    					"java/lang/StringBuilder", "<init>", "()V");
+    			lhs.codegen(output);
+    			output.addMemberAccessInstruction(INVOKEVIRTUAL, 
+    					"java/lang/StringBuilder", "append", "(I)Ljava/lang/StringBuilder;");
+    			rhs.codegen(output);
+    			output.addMemberAccessInstruction(INVOKEVIRTUAL,
+    					"java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
+    			output.addMemberAccessInstruction(INVOKEVIRTUAL,
+    					"java/lang/StringBuilder", "toString", "()Ljava/lang/String;");
+    		}
+    		else{
+		        lhs.codegen(output);
+		        rhs.codegen(output);
+		        output.addNoArgInstruction(IADD);
+    		}
+    	}else if(lhs.type == Type.LONG){
+	        lhs.codegen(output);
+	        rhs.codegen(output);
+	        output.addNoArgInstruction(LADD);
+    	}
+    	else if (lhs.type == Type.DOUBLE){
+	        lhs.codegen(output);
+	        rhs.codegen(output);
+	        output.addNoArgInstruction(DADD);
+    	}
     }
 
 }
@@ -221,9 +442,20 @@ class JSubtractOp extends JBinaryExpression {
     public JExpression analyze(Context context) {
         lhs = (JExpression) lhs.analyze(context);
         rhs = (JExpression) rhs.analyze(context);
-        lhs.type().mustMatchExpected(line(), Type.INT);
-        rhs.type().mustMatchExpected(line(), Type.INT);
-        type = Type.INT;
+        if(lhs.type == Type.LONG){
+            lhs.type().mustMatchExpected(line(), Type.LONG);
+            rhs.type().mustMatchExpected(line(), Type.LONG);
+            type = Type.LONG;
+        }
+        else if(lhs.type == Type.DOUBLE){
+            lhs.type().mustMatchExpected(line(), Type.DOUBLE);
+            rhs.type().mustMatchExpected(line(), Type.DOUBLE);
+            type = Type.DOUBLE;
+        }else{
+	        lhs.type().mustMatchExpected(line(), Type.INT);
+	        rhs.type().mustMatchExpected(line(), Type.INT);
+	        type = Type.INT;
+        }
         return this;
     }
 
@@ -237,9 +469,20 @@ class JSubtractOp extends JBinaryExpression {
      */
 
     public void codegen(CLEmitter output) {
-        lhs.codegen(output);
-        rhs.codegen(output);
-        output.addNoArgInstruction(ISUB);
+    	if(lhs.type == Type.INT){
+	        lhs.codegen(output);
+	        rhs.codegen(output);
+	        output.addNoArgInstruction(ISUB);
+    	}else if(lhs.type == Type.LONG){
+	        lhs.codegen(output);
+	        rhs.codegen(output);
+	        output.addNoArgInstruction(LSUB);
+    	}
+    	else if (lhs.type == Type.DOUBLE){
+	        lhs.codegen(output);
+	        rhs.codegen(output);
+	        output.addNoArgInstruction(DSUB);
+    	}
     }
 
 }
@@ -279,9 +522,20 @@ class JMultiplyOp extends JBinaryExpression {
     public JExpression analyze(Context context) {
         lhs = (JExpression) lhs.analyze(context);
         rhs = (JExpression) rhs.analyze(context);
-        lhs.type().mustMatchExpected(line(), Type.INT);
-        rhs.type().mustMatchExpected(line(), Type.INT);
-        type = Type.INT;
+        if(lhs.type == Type.LONG){
+            lhs.type().mustMatchExpected(line(), Type.LONG);
+            rhs.type().mustMatchExpected(line(), Type.LONG);
+            type = Type.LONG;
+        }
+        else if(lhs.type == Type.DOUBLE){
+            lhs.type().mustMatchExpected(line(), Type.DOUBLE);
+            rhs.type().mustMatchExpected(line(), Type.DOUBLE);
+            type = Type.DOUBLE;
+        }else{
+	        lhs.type().mustMatchExpected(line(), Type.INT);
+	        rhs.type().mustMatchExpected(line(), Type.INT);
+	        type = Type.INT;
+        }
         return this;
     }
 
@@ -295,9 +549,20 @@ class JMultiplyOp extends JBinaryExpression {
      */
 
     public void codegen(CLEmitter output) {
-        lhs.codegen(output);
-        rhs.codegen(output);
-        output.addNoArgInstruction(IMUL);
+    	if(lhs.type == Type.INT){
+	        lhs.codegen(output);
+	        rhs.codegen(output);
+	        output.addNoArgInstruction(IMUL);
+    	}else if(lhs.type == Type.LONG){
+	        lhs.codegen(output);
+	        rhs.codegen(output);
+	        output.addNoArgInstruction(LMUL);
+    	}
+    	else if (lhs.type == Type.DOUBLE){
+	        lhs.codegen(output);
+	        rhs.codegen(output);
+	        output.addNoArgInstruction(DMUL);
+    	}
     }
 
 }

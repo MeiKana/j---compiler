@@ -40,6 +40,10 @@ class JLiteralChar extends JExpression {
         type = Type.CHAR;
         return this;
     }
+    
+    public int toNum(){
+    	return Integer.parseInt(text);
+    }
 
     /**
      * Generating code for a char literal means generating code to push it onto

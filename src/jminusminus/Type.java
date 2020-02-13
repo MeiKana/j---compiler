@@ -48,6 +48,10 @@ class Type {
 
     /** java.lang.Integer. */
     public final static Type BOXED_INT = typeFor(java.lang.Integer.class);
+    
+    public final static Type BOXED_DOUBLE = typeFor(java.lang.Double.class);
+    
+    public final static Type BOXED_LONG = typeFor(java.lang.Long.class);
 
     /** java.lang.Character. */
     public final static Type BOXED_CHAR = typeFor(java.lang.Character.class);
@@ -430,7 +434,8 @@ class Type {
                 : cls.isArray() ? "[" + descriptorFor(cls.getComponentType())
                         : cls.isPrimitive() ? (cls == int.class ? "I"
                                 : cls == char.class ? "C"
-                                        : cls == boolean.class ? "Z" : "?")
+                                        : cls == boolean.class ? "Z" : cls == double.class ? "D"
+                                 : cls == long.class ? "J" : "?")
                                 : "L" + cls.getName().replace('.', '/') + ";";
     }
 

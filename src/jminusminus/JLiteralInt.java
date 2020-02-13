@@ -27,6 +27,10 @@ class JLiteralInt extends JExpression {
         super(line);
         this.text = text;
     }
+    
+    public int toNum(){
+    	return Integer.parseInt(text);
+    }
 
     /**
      * Analyzing an int literal is trivial.
